@@ -1,2 +1,2 @@
-# bc-14-pair_programming
-An Peer Programming app done in AngularJS and Python's Flask
+# CodeKS Pair Programming App
+Currently a basic HTML template is set up
