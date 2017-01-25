@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>CodeKS | Log in</title>
+
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="stylesheet" type="text/css" href="css/ionicons.css">
+        <link rel="stylesheet" type="text/css" href="css/app.css">
+        
+        <base href="/" />
+    </head>
+
+    <body class="container">
+	
+        <div class="row">
+            <div class="sm-8 sm-offset-1 md-4 md-offset-3 lg-4 lg-offset-3 tile tile-royal">
+                <h1>Log into CodeKS</h1>
+                <div class="row">
+                    <div class="sm-8 sm-offset-1 md-4 md-offset-3 lg-4 lg-offset-3">
+                        <img class="image-full" src="img/x-icon.svg" alt="CodeKS App Logo"/>
+                    </div>
+                </div>
+                <form ction="/login" method="POST">
+                    <div class="row">
+                        <div class="sm-8 sm-offset-1 md-8 md-offset-1 lg-8 lg-offset-1">
+                            <input class="mt-form-input" type="email" name ="email" placeholder="Email" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="sm-8 sm-offset-1 md-8 md-offset-1 lg-8 lg-offset-1">
+                            <input class="mt-form-input" type="password" name ="raw_password" onchange="codeKS.encodePassword();" placeholder="Password" required />
+                        </div>
+                        <input type="hidden" name="password"/>
+                    </div>
+                    <div class="row">
+                        <div class="sm-4 sm-offset-3 md-4 md-offset-3 lg-4 lg-offset-3">
+                            <input class="mt-button" type="submit" value="Log In" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <script type="text/javascript" src="js/app.js"></script>
+        
+    </body>
+</html>
+
