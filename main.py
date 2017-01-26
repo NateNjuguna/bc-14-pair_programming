@@ -89,7 +89,7 @@ def login():
 			passw = faya.fetch('/users/' + request.form['username'] + '/password')
 			if hmac.compare_digest(hmac.new(bytearray(open('static/secret', 'r').read(), 'utf-8'), bytearray(request.form['password'], 'utf-8'), 'SHA256').hexdigest(), passw.val()):
 				#Create session and redirect to projects page
-				session['user'] = base64.b64encode(request.form['username']).decode('utf-8')
+				session['user'] = base64.b64encode(bytearray(request.form['username'], 'utf-8')).decode('utf-8')
 				return redirect(url_for('projects'))
 			else:
 				#Redirect to login with incorrect login details warning
@@ -107,7 +107,7 @@ def logout():
 		#Check for session
 		if 'user' in session:
 			#Destroy session and redirect to login
-			session.pop('username', None)
+			session.pop('user', None)
 			return redirect(url_for('login'))
 		else :
 			#Return bad request error
@@ -116,10 +116,10 @@ def logout():
 		abort(405)
 		
 @application.route('/projects')
-def projects(username):
+def projects():
 	#If method is GET return welcome template otherwise return Method Not Allowed
 	if request.method == 'GET':
-		projects = faya.fetch('/users/' + base64.b64decode(session['user']).decode('utf-8') + '/projects').val().split(',')
+		projects = faya.fetch('/users/' + base64.b64decode(session['user']).decode('utf-8') + '/projects').val().split(', ')
 		return render_template('projects.html', projects=projects)
 	else:
 		abort(405)
@@ -142,6 +142,7 @@ def signin():
 			'projects': None
 		})
 		faya.users.append(username)
+		session['user'] = base64.b64encode(bytearray(username, 'utf-8')).decode('utf-8')
 		return redirect(url_for('projects'))
 	else:
 		abort(405)
