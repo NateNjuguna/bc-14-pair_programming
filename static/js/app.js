@@ -16,7 +16,6 @@ var codeKS = {
         }else {
             elements.errorMessage.style = '';
         }
-        console.log(elements.errorMessage.innerHTML.replace(' ', ''));
     },
     checkPasswordMatch: function(self) {
         if(elements.raw_password.value !== self.value) {

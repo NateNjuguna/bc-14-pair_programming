@@ -16,6 +16,17 @@
     <body class="container">
 	
         <div class="row">
+            {% if login_failure == True %}
+            <div class="sm-8 sm-offset-1 md-4 md-offset-3 lg-4 lg-offset-3 tile tile-assertive" id="error_messages">
+                <ul>
+                        <li>Invalid login details</li>
+                </ul>
+            </div>
+            {% else %}
+            <div class="sm-8 sm-offset-1 md-4 md-offset-3 lg-4 lg-offset-3 tile tile-assertive" id="error_messages" style="display:none;">
+                <ul></ul>
+            </div>
+            {% endif %}
             <div class="sm-8 sm-offset-1 md-4 md-offset-3 lg-4 lg-offset-3 tile tile-royal">
                 <h1>Log into CodeKS</h1>
                 <div class="row">
@@ -23,15 +34,15 @@
                         <img class="image-full" src="img/x-icon.svg" alt="CodeKS App Logo"/>
                     </div>
                 </div>
-                <form ction="/login" method="POST">
+                <form action="/login" method="POST">
                     <div class="row">
                         <div class="sm-8 sm-offset-1 md-8 md-offset-1 lg-8 lg-offset-1">
-                            <input class="mt-form-input" type="text" name="username" placeholder="Username" required />
+                            <input class="mt-form-input" type="text" name="username" onchange="codeKS.validateHasNoSpace(this, 'Last Name');" placeholder="Username" required />
                         </div>
                     </div>
                     <div class="row">
                         <div class="sm-8 sm-offset-1 md-8 md-offset-1 lg-8 lg-offset-1">
-                            <input class="mt-form-input" type="password" id="raw_password" onchange="codeKS.encodePassword();" placeholder="Password" required />
+                            <input class="mt-form-input" type="password" id="raw_password" onchange="codeKS.encodePassword(this);" placeholder="Password" required />
                         </div>
                         <input type="hidden" name="password"/>
                     </div>

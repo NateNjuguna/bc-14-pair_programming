@@ -17,13 +17,11 @@
 	
         <div class="container">
             <div class="row">
-                <span class="sm-6 md-8 lg-8"></span>
-                <div class="sm-4 md-2 lg-2">
-                    <div class=""
+                {% for project in projects %}
+                <div class="sx-8 sx-offset-1 md-4 lg-4 tile tile-positive">
+                    <i class="icon-full ion-folder"></i>
                 </div>
-            </div>
-            <div class="row">
-                
+                {% endfor %}
             </div>
         </div>
         
