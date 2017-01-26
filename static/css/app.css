@@ -181,16 +181,7 @@ center p {
     
 }
 li{
-    display: inline;
     text-decoration: none;
-}
-li a{
-    display: inline;
-    text-decoration: none;
-}
-ul{
-    display: inline;
-    float: left;
 }
 .center {
     position: relative;
@@ -278,7 +269,7 @@ ul{
     width: 100%;
 }
 .tile {
-    display: inline-block!important;
+    display: inline-block;
     box-shadow: 2px 3px 10px 4px rgba(0, 0, 0, 0.3);
     margin-top: 10px;
 }
@@ -348,3 +339,7 @@ ul{
     color: #000000;
 }
 
+#error_messages {
+    -webkit-transition: all ease-in-out 2s;
+    transition: all ease-in-out 2s;
+}
