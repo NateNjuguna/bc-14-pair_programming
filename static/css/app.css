@@ -160,6 +160,7 @@
 a, aside, body, button, div, footer, h1, h2, h3, h4, h5, header, input, p, sector, textarea{
     display: block;
     font-family: arial;
+    color: #FFFFFF;
 }
 a{
     color: #FFFFFF;
@@ -196,6 +197,15 @@ li{
     padding: 0px;
     width: 100%;
 }
+.icon-small {
+    font-size: 24px;
+}
+.icon-medium {
+    font-size: 48px;
+}
+.icon-large {
+    font-size: 96px;
+}
 .image-avatar{
     height: 200px;
     width: 200px;
@@ -223,6 +233,9 @@ li{
     color: #FFFFFF;
     font-size: 37px;
     margin-right: 20px;
+}
+.no-project {
+    height: 400px
 }
 .mt-button{
     background: rgba(146, 146, 146, 1);

@@ -75,4 +75,8 @@ class Faya(Helpers):
 			'serviceAccount': service_account
 		})
 		#get list of all users
-		self.users = list(self.fetch_shallow('/users').val())
+		self.users = self.fetch_shallow('/users').val()
+		if self.users == None:
+			self.users = []
+		else:
+			self.users = list(self.users)
