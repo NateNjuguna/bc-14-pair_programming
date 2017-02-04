@@ -4,21 +4,23 @@ from controllers.fayabase import Faya
 import base64, hmac, json, pyrebase, os
 
 #configure fayabase lib
+config = json.loads(base64.b64decode(open('static/config', 'r').read()).decode('utf-8'))
 faya = Faya(
-	'AIzaSyBvrngIPi90SdPGvnpADbGp5Jr7gY4IYsM',                                  #Firebase server API Key
-	'pair-programming-bb831.firebaseapp.com',                                   #Firebase authDomain
-	'https://pair-programming-bb831.firebaseio.com/',                           #Firebase database URL
-	'pair-programming-bb831.appspot.com',                                       #Firebase bucket URL
-	'static/pair-programming-bb831-firebase-adminsdk-7sj7a-f277ae4258.json'     #Firebase service account file
+	config['apiKey'],				#Firebase Api Key
+	config['authDomain'],			#Firebase auth domain
+	config['databaseURL'],			#Firebase database URL
+	config['bucketURL'],			#Firebase bucket URL
+	config['serviceAccountFile']	#Firebase service account file
 )
 
 #configure flask to be the main module
 application = Flask(__name__)
 
-#configure mail
-
 #configure secret key for session module
 application.secret_key = open('static/secret', 'r').read()
+
+#configure jinja2 template cache
+application.config['TEMPLATES_AUTO_RELOAD'] = True
 
 #Define my apps routes and write my control functions
 
@@ -110,6 +112,19 @@ def login():
 	else:
 		abort(405)
 		
+@application.route('/profile')
+def profile():
+	#If method is GET return welcome template otherwise return Method Not Allowed
+	if request.method == 'GET':
+		#Check for session
+		if 'user' in session:
+			return render_template('profile.html')
+		else:
+			#Redirect to login
+			return redirect(url_for('login'))
+	else:
+		abort(405)
+
 @application.route('/logout')
 def logout():
 	#If method is GET return welcome template otherwise return Method Not Allowed
@@ -126,46 +141,47 @@ def logout():
 		abort(405)
 		
 @application.route('/projects', methods=['GET', 'POST'])
-@application.route('/projects/<action>', methods=['GET', 'POST'])
+@application.route('/projects/<path:action>', methods=['GET', 'POST'])
 def projects(action=None):
-	print(action)
 	#If method is GET return template otherwise return Method Not Allowed
 	if request.method == 'GET':
 		#Check if user is logged in 
 		if 'user' in session:
 			if action == None:
-				pass
+				#Render projects page
+				projects = faya.fetch('/users/' + base64.b64decode(session['user']).decode('utf-8') + '/projects').val()
+				if type(projects) is type(''):
+					projects = projects.split(', ')
+				return render_template('projects.html', projects=projects, user=base64.b64decode(session['user']).decode('utf-8'))
 			else:
 				#Defragment actions and redirect or render appropriately
 				action = action.split('/')
 				if action[0] == 'add':
-					render_template('projects/add.html', user=base64.b64decode(session['user']).decode('utf-8'))
+					return render_template('projects/add.html', user=base64.b64decode(session['user']).decode('utf-8'))
 				elif action[0] == 'delete':
 					faya.delete('/projects/' + action[1])
 					return redirect(url_for('projects'))
 				elif action[0] == 'edit':
-					render_template('projects/edit.html', name=action[1], user=base64.b64decode(session['user']).decode('utf-8'))
+					return render_template('projects/edit.html', name=action[1], user=base64.b64decode(session['user']).decode('utf-8'))
 				elif action[0] == 'files':
 					
 					if action[2] == 'add':
-						render_template('projects/files/add.html', name=action[1], user=base64.b64decode(session['user']).decode('utf-8'))
+						return render_template('projects/files/add.html', name=action[1], user=base64.b64decode(session['user']).decode('utf-8'))
 					elif action[2] == 'delete':
 						faya.delete('/projects/' + action[1] + '/files/' +  action[3])
-						return redirect(url_for('projects'))
+						return redirect(url_for('projects', action = 'view/' + action[1]))
 					elif action[2] == 'edit':
-						render_template('projects/files/edit.html', file=action[3], name=action[1], user=base64.b64decode(session['user']).decode('utf-8'))
+						return render_template('projects/files/edit.html', file=action[3], name=action[1], user=base64.b64decode(session['user']).decode('utf-8'))
 					else:
-						return redirect(url_for('projects'))
+						return redirect(url_for('projects', action = 'view/' + action[1]))
 						
 				elif action[0] == 'view':
-					files = faya.fetch_shallow('/projects/' + action.split('/')[1] + '/files').val()
-					render_template('projects/view.html', files=files, name=action[1], user=base64.b64decode(session['user']).decode('utf-8'))
+					files = faya.fetch_shallow('/projects/' + action[1] + '/files').val()
+					if files != None:
+						files = list(files)
+					return render_template('projects/view.html', files=files, name=action[1], user=base64.b64decode(session['user']).decode('utf-8'))
 				else:
 					return redirect(url_for('projects'))
-			projects = faya.fetch('/users/' + base64.b64decode(session['user']).decode('utf-8') + '/projects').val()
-			if type(projects) is type(''):
-				projects = projects.split(', ')
-			return render_template('projects.html', projects=projects, user=base64.b64decode(session['user']).decode('utf-8'))
 		else:
 			#Redirect user to login page
 			return redirect(url_for('login'))
@@ -173,11 +189,12 @@ def projects(action=None):
 		#Check if user is logged in 
 		if 'user' in session:
 			if action == None:
-				abort(405)
+				abort(404)
 			else:
 				#Defragment actions and redirect or render appropriately
 				action = action.split('/')
 				if action[0] == 'add':
+					faya.change('/users/' + base64.b64decode(session['user']).decode('utf-8') + '/projects', )
 					faya.add('/projects/' + request.form['name'], {
 						'owner': base64.b64decode(session['user']).decode('utf-8')
 					});
@@ -191,14 +208,11 @@ def projects(action=None):
 				elif action[0] == 'files':
 					
 					if action[2] == 'add':
-						faya.add('/projects/' + request.form['project'] + '/files/' + request.form['name'], 'Hello World');
-						return redirect(url_for('projects'))
+						faya.add('/projects/' + request.form['project'] + '/files/' + request.form['name'].replace('.', '_'), 'Hello World');
+						return redirect(url_for('projects', action = 'view/' + request.form['project']))
 					else:
 						return redirect(url_for('projects'))
-						
-				elif action[0] == 'view':
-					files = faya.fetch_shallow('/projects/' + action.split('/')[1] + '/files').val()
-					render_template('projects/view.html', files=files, name=action[1], user=base64.b64decode(session['user']).decode('utf-8'))
+				
 				else:
 					abort(404)
 		else:

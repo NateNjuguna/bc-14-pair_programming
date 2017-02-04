@@ -6,45 +6,40 @@ class Helpers(dict):
 	def add(self, node_uri, data):
 		children = node_uri.split('/')[1:]
 		node = self.firebase.database()
-		while len(children) > 0:
-			node = node.child(children[0])
-			children.pop(0)
+		while len(children):
+			node = node.child(children.pop(0))
 		node.set(data)
 		
 	#Update data on a firebase node
 	def change(self, node_uri):
 		children = node_uri.split('/')[1:]
 		node = self.firebase.database()
-		while len(children) > 0:
-			node = node.child(children[0])
-			children.pop(0)
+		while len(children):
+			node = node.child(children.pop(0))
 		return node.update()
 		
 	#Delete data on a firebase node
 	def delete(self, node_uri):
 		children = node_uri.split('/')[1:]
 		node = self.firebase.database()
-		while len(children) > 0:
-			node = node.child(children[0])
-			children.pop(0)
-		return node.update()
+		while len(children):
+			node = node.child(children.pop(0))
+		return node.remove()
 		
 	#Fetch node values from uri
 	def fetch(self, node_uri):
 		children = node_uri.split('/')[1:]
 		node = self.firebase.database()
-		while len(children) > 0:
-			node = node.child(children[0])
-			children.pop(0)
+		while len(children):
+			node = node.child(children.pop(0))
 		return node.get()
 		
 	#Fetch node keys from uri
 	def fetch_shallow(self, node_uri):
 		children = node_uri.split('/')[1:]
 		node = self.firebase.database()
-		while len(children) > 0:
-			node = node.child(children[0])
-			children.pop(0)
+		while len(children):
+			node = node.child(children.pop(0))
 		return node.shallow().get()
 		
 	#Generate a valid username

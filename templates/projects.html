@@ -13,45 +13,42 @@
         <base href="/" />
     </head>
 
-    <body>
-	
-        <div class="container">
-            <div class="row">
-                <div class="sm-6 md-6 lg-6">
-                    <h2>My Projects</h2>
-                </div>
-                <a class="sm-4 md-4 lg-4 tile tile-disabled" href="/profile">
+    <body class="container">
+        <div class="row">
+            <div class="sm-6 md-6 lg-6">
+                <h2>My Projects</h2>
+            </div>
+            <a class="sm-4 md-4 lg-4 tile tile-disabled" href="/profile">
+                <p>
+                    {{ user }} <i class="icon-small ion-person"></i>
+                </p>
+            </a>
+        </div>
+        <div class="row">
+            {% if projects == None %}
+                <a class="sx-8 sx-offset-1 md-4 lg-4 tile tile-dark tile-disabled" href="projects/add">
+                    <h3>Add a project to begin</h3>
                     <p>
-                        {{ user }} <i class="icon-small ion-person"></i>
+                        <i class="icon-large ion-folder"></i>
+                    </p>
+
+                </a>
+            {% else %}
+                {% for project in projects %}
+                    <a class="sx-8 sx-offset-1 md-4 lg-4 tile tile-positive" href="projects/view/{{ project }}">
+                        <h3>{{ project }}</h3>
+                        <p>
+                            <i class="icon-large ion-folder"></i>
+                        </p>
+                    </a>
+                {% endfor %}
+                <a class="sx-8 sx-offset-1 md-4 lg-4 tile tile-dark tile-disabled" href="projects/add">
+                    <h3>Add new project</h3>
+                    <p>
+                        <i class="icon-large ion-folder"></i>
                     </p>
                 </a>
-            </div>
-            <div class="row">
-                {% if projects == None %}
-                    <a class="sx-8 sx-offset-1 md-4 lg-4 tile tile-dark tile-disabled" href="project/add">
-                        <h3>Add a project to begin</h3>
-                        <p>
-                            <i class="icon-large ion-folder"></i>
-                        </p>
-                        
-                    </a>
-                {% else %}
-                    {% for project in projects %}
-                        <a class="sx-8 sx-offset-1 md-4 lg-4 tile tile-positive" href="project/view/{{ project }}">
-                            <h3>{{ project }}</h3>
-                            <p>
-                                <i class="icon-large ion-folder"></i>
-                            </p>
-                        </a>
-                    {% endfor %}
-                    <a class="sx-8 sx-offset-1 md-4 lg-4 tile tile-dark tile-disabled" href="project/add">
-                        <h3>Add new project</h3>
-                        <p>
-                            <i class="icon-large ion-folder"></i>
-                        </p>
-                    </a>
-                {% endif %}
-            </div>
+            {% endif %}
         </div>
         
         <script type="text/javascript" src="js/app.js"></script>
